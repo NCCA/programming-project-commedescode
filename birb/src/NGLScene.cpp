@@ -38,8 +38,8 @@ void NGLScene::initializeGL()
   glEnable(GL_MULTISAMPLE);
   ngl::VAOPrimitives::createSphere("sphere",1.0f,20);
   ngl::VAOPrimitives::createLineGrid("floor",100,100,50);
-  m_emitter=std::make_unique<Emitter>(10000,10000,800,ngl::Vec3(0,0,0));
-  ngl::ShaderLib::loadShader("ParticleShader","shaders/ParticleVertex.glsl","shaders/ParticleFragment.glsl");
+  m_flock=std::make_unique<flock>(10000,10000,800,ngl::Vec3(0,0,0));
+  ngl::ShaderLib::loadShader("ParticleShader","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/ParticleVertex.glsl","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/ParticleFragment.glsl");
   ngl::ShaderLib::use("ParticleShader");
   m_view = ngl::lookAt({0,40,80},{0,0,0},{0,1,0});
   m_previousTime=std::chrono::steady_clock::now();
@@ -67,7 +67,7 @@ void NGLScene::paintGL()
 
   ngl::ShaderLib::use("ParticleShader");
   ngl::ShaderLib::setUniform("MVP",m_project*m_view*mouseRotation);
-  m_emitter->render();
+  m_flock->render();
   ngl::ShaderLib::use(ngl::nglColourShader);
   ngl::ShaderLib::setUniform("MVP",m_project*m_view*mouseRotation);
   ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,1.0f,1.0f);
@@ -125,7 +125,7 @@ void NGLScene::process_keys()
       defaut : break;
     }
   }
-m_emitter->move(dx,dy,dz);
+m_flock->move(dx,dy,dz);
 }
 
 void NGLScene::timerEvent(QTimerEvent *_event)
@@ -136,14 +136,14 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   if(m_animate)
   {
     process_keys();
-    m_emitter->update(delta.count());
+    m_flock->update(delta.count());
   }
   update();
 }
 
 void NGLScene::setSpread(double _value)
 {
-    m_emitter->setSpread(static_cast<float>(_value));
+    m_flock->setSpread(static_cast<float>(_value));
     update();
 }
 

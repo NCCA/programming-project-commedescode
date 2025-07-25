@@ -5,7 +5,7 @@
 #include "WindowParams.h"
 // this must be included after NGL includes else we get a clash with gl libs
 #include <QOpenGLWidget>
-#include "Emitter.h"
+#include "flock.h"
 #include <memory>
 #include <chrono>
 #include <QSet>
@@ -49,7 +49,7 @@ class NGLScene : public QOpenGLWidget
     /// @brief this is called everytime we resize the window
     //----------------------------------------------------------------------------------------------------------------------
     void resizeGL(int _w, int _h) override;
-    Emitter *getEmitter() { return m_emitter.get();}
+    flock *getflock() { return m_flock.get();}
 public slots :
 
     void setSpread(double _value);
@@ -96,7 +96,7 @@ private:
     WinParams m_win;
     /// position for our model
     ngl::Vec3 m_modelPos;
-    std::unique_ptr<Emitter> m_emitter;
+    std::unique_ptr<flock> m_flock;
     bool m_animate = true;
     ngl::Mat4 m_view;
     ngl::Mat4 m_project;

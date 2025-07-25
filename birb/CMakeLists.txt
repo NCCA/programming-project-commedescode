@@ -18,10 +18,10 @@ target_sources(${TargetName} PRIVATE
     src/main.cpp
     src/MainWindow.cpp
     src/NGLScene.cpp
-    src/Emitter.cpp
+    src/flock.cpp
     src/NGLSceneMouseControls.cpp
     include/MainWindow.h
-    include/Emitter.h
+    include/flock.h
     include/NGLScene.h
     include/WindowParams.h
     ui/MainWindow.ui

@@ -1,5 +1,5 @@
-#ifndef EMITTER_H_
-#define EMITTER_H_
+#ifndef FLOCK_H_
+#define FLOCK_H_
 #include <vector>
 #include <string_view>
 #include <ngl/Vec3.h>
@@ -7,13 +7,13 @@
 #include <ngl/MultiBufferVAO.h>
 #include <memory>
 #include <QObject>
-class Emitter : public QObject
+class flock : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int m_numPerFrame WRITE setNumPerFrame);
 
 public :
-    Emitter(size_t _num,size_t _maxAlive, int _numPerFrame,ngl::Vec3 _pos);
+    flock(size_t _num,size_t _maxAlive, int _numPerFrame,ngl::Vec3 _pos);
     size_t size() const;
     void update(float _dt);
     void render() const;

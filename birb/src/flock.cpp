@@ -1,4 +1,4 @@
-#include "Emitter.h"
+#include "flock.h"
 #include <iostream>
 #include <ngl/Random.h>
 #include <algorithm>
@@ -10,7 +10,7 @@
 #include <ngl/Util.h>
 #include <ngl/VAOFactory.h>
 #include <algorithm>
-Emitter::Emitter(size_t _num, size_t _maxAlive, int _numPerFrame, ngl::Vec3 _pos) :
+flock::flock(size_t _num, size_t _maxAlive, int _numPerFrame, ngl::Vec3 _pos) :
 m_maxParticles{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_pos}
 {
   m_ppos.resize(m_maxParticles);
@@ -33,12 +33,12 @@ m_maxParticles{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_
     m_vao->unbind();
 }
 
-size_t Emitter::size() const
+size_t flock::size() const
 {
   return m_maxParticles;
 }
 
-void Emitter::birthParticles()
+void flock::birthParticles()
 {
   auto births = static_cast<int>(ngl::Random::randomPositiveNumber(m_numPerFrame));
 
@@ -56,7 +56,7 @@ void Emitter::birthParticles()
  }
 }
 
-void Emitter::update(float _dt)
+void flock::update(float _dt)
 {
   const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
 
@@ -88,7 +88,7 @@ void Emitter::update(float _dt)
 
 
 
-void Emitter::resetParticle(size_t _i)
+void flock::resetParticle(size_t _i)
 {
   ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
   m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.0f);
@@ -101,7 +101,7 @@ void Emitter::resetParticle(size_t _i)
 }
 
 
-ngl::Vec3 Emitter::randomVectorOnSphere(float _radius)
+ngl::Vec3 flock::randomVectorOnSphere(float _radius)
 {
   auto phi = ngl::Random::randomPositiveNumber(M_PI * 2.0f);
   auto costheta = ngl::Random::randomNumber();
@@ -113,7 +113,7 @@ ngl::Vec3 Emitter::randomVectorOnSphere(float _radius)
                    r * std::cos(theta));
 }
 
-void Emitter::render() const
+void flock::render() const
 {
   m_vao->bind();
   m_vao->setData(0,ngl::MultiBufferVAO::VertexData(
@@ -137,7 +137,7 @@ void Emitter::render() const
 
 }
 
-void Emitter::move(float _dx, float _dy, float _dz)
+void flock::move(float _dx, float _dy, float _dz)
 {
   m_pos.m_x +=_dx;
   m_pos.m_y +=_dy;
@@ -145,7 +145,7 @@ void Emitter::move(float _dx, float _dy, float _dz)
 }
 
 
-void Emitter::setSpread(float _value)
+void flock::setSpread(float _value)
 {
     m_spread=_value;
 }
