@@ -29,13 +29,13 @@ private :
     std::vector<ngl::Vec3> m_pcolour;
     std::vector<float> m_psize;
     std::vector<int> m_plife;
-    enum class ParticleState : bool {Active,Dead};
-    std::vector<ParticleState> m_state;
-    size_t m_maxParticles;
+    enum class birbState : bool {Active,Dead};
+    std::vector<birbState> m_state;
+    size_t m_maxbirbs;
     size_t m_maxAlive = 1000;
     int m_numPerFrame = 120;
-    void resetParticle(size_t _i);
-    void birthParticles();
+    void resetbirb(size_t _i);
+    void birthbirbs();
     ngl::Vec3 randomVectorOnSphere(float _radius = 1.0f);
     std::unique_ptr<ngl::MultiBufferVAO> m_vao;
     float m_spread = 5.5f;

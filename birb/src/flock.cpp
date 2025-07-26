@@ -11,17 +11,17 @@
 #include <ngl/VAOFactory.h>
 #include <algorithm>
 flock::flock(size_t _num, size_t _maxAlive, int _numPerFrame, ngl::Vec3 _pos) :
-m_maxParticles{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_pos}
+m_maxbirbs{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_pos}
 {
-  m_ppos.resize(m_maxParticles);
-  m_pcolour.resize(m_maxParticles);
-  m_pdir.resize(m_maxParticles);
-  m_plife.resize(m_maxParticles);
-  m_psize.resize(m_maxParticles);
-  m_state.resize(m_maxParticles);
-  for(size_t i=0; i<m_maxParticles; ++i)
+  m_ppos.resize(m_maxbirbs);
+  m_pcolour.resize(m_maxbirbs);
+  m_pdir.resize(m_maxbirbs);
+  m_plife.resize(m_maxbirbs);
+  m_psize.resize(m_maxbirbs);
+  m_state.resize(m_maxbirbs);
+  for(size_t i=0; i<m_maxbirbs; ++i)
   {
-    resetParticle(i);
+    resetbirb(i);
   }
 
     m_vao = ngl::vaoFactoryCast<ngl::MultiBufferVAO>(
@@ -35,21 +35,21 @@ m_maxParticles{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_
 
 size_t flock::size() const
 {
-  return m_maxParticles;
+  return m_maxbirbs;
 }
 
-void flock::birthParticles()
+void flock::birthbirbs()
 {
   auto births = static_cast<int>(ngl::Random::randomPositiveNumber(m_numPerFrame));
 
   for(size_t i=0; i<births; ++i)
   {
-    for(size_t p=0; p<m_maxParticles; ++p)
+    for(size_t p=0; p<m_maxbirbs; ++p)
     {
-      if(m_state[p] == ParticleState::Dead)
+      if(m_state[p] == birbState::Dead)
       {
-        resetParticle(p);
-        m_state[p] = ParticleState::Active;
+        resetbirb(p);
+        m_state[p] = birbState::Active;
         break;
       }
     }
@@ -61,16 +61,16 @@ void flock::update(float _dt)
   const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
 
   auto numAlive = std::count_if(std::begin(m_state),std::end(m_state),
-                                [](auto p){ return p == ParticleState::Active;});
+                                [](auto p){ return p == birbState::Active;});
 
   if(numAlive < m_maxAlive)
   {
-    birthParticles();
+    birthbirbs();
   }
-// #pragma omp parallel for
- for(size_t i=0; i<m_maxParticles; ++i)
+ #pragma omp parallel for
+ for(size_t i=0; i<m_maxbirbs; ++i)
  {
-    if(m_state[i] == ParticleState::Dead)
+    if(m_state[i] == birbState::Dead)
       continue;
     m_pdir[i] +=gravity * _dt * 0.5f;
     m_ppos[i] += m_pdir[i] * 0.5f;
@@ -79,7 +79,7 @@ void flock::update(float _dt)
     m_ppos[i].m_w=m_psize[i];
     if(--m_plife[i] <=0 || m_ppos[i].m_y <=0.0f)
     {
-      resetParticle(i);
+      resetbirb(i);
     }
   }
 
@@ -88,7 +88,7 @@ void flock::update(float _dt)
 
 
 
-void flock::resetParticle(size_t _i)
+void flock::resetbirb(size_t _i)
 {
   ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
   m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.0f);
@@ -97,7 +97,7 @@ void flock::resetParticle(size_t _i)
   m_psize[_i]=0.01f;
   m_plife[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
   m_pcolour[_i]=ngl::Random::getRandomColour3();
-  m_state[_i]= ParticleState::Dead;
+  m_state[_i]= birbState::Dead;
 }
 
 
@@ -129,7 +129,7 @@ void flock::render() const
 
   m_vao->setVertexAttributePointer(1,3,GL_FLOAT,0,0);
 
-  m_vao->setNumIndices(m_maxParticles);
+  m_vao->setNumIndices(m_maxbirbs);
   glEnable(GL_PROGRAM_POINT_SIZE);
   m_vao->draw();
   glDisable(GL_PROGRAM_POINT_SIZE);

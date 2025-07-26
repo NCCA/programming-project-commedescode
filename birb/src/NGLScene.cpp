@@ -39,8 +39,8 @@ void NGLScene::initializeGL()
   ngl::VAOPrimitives::createSphere("sphere",1.0f,20);
   ngl::VAOPrimitives::createLineGrid("floor",100,100,50);
   m_flock=std::make_unique<flock>(10000,10000,800,ngl::Vec3(0,0,0));
-  ngl::ShaderLib::loadShader("ParticleShader","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/ParticleVertex.glsl","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/ParticleFragment.glsl");
-  ngl::ShaderLib::use("ParticleShader");
+  ngl::ShaderLib::loadShader("birbShader","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/birbVertex.glsl","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/birbFragment.glsl");
+  ngl::ShaderLib::use("birbShader");
   m_view = ngl::lookAt({0,40,80},{0,0,0},{0,1,0});
   m_previousTime=std::chrono::steady_clock::now();
 
@@ -65,7 +65,7 @@ void NGLScene::paintGL()
   mouseRotation.m_m[3][1]=m_modelPos.m_y;
   mouseRotation.m_m[3][2]=m_modelPos.m_z;
 
-  ngl::ShaderLib::use("ParticleShader");
+  ngl::ShaderLib::use("birbShader");
   ngl::ShaderLib::setUniform("MVP",m_project*m_view*mouseRotation);
   m_flock->render();
   ngl::ShaderLib::use(ngl::nglColourShader);
@@ -74,7 +74,7 @@ void NGLScene::paintGL()
   ngl::VAOPrimitives::draw("floor");
 
   ngl::ShaderLib::use(ngl::nglTextShader);
- // m_text->renderText(10,700,"Particle System");
+ // m_text->renderText(10,700,"birb System");
 
 
 }

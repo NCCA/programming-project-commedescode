@@ -11,14 +11,14 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Particle NGL</string>
+   <string> birb </string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="m_mainWindowGridLayout">
     <item row="0" column="1">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
-       <string>Particle Controls</string>
+       <string>Control birb</string>
       </property>
       <layout class="QFormLayout" name="formLayout">
        <item row="1" column="1">

@@ -1,7 +1,7 @@
 #version 410 core
 
 layout (location=0) out vec4 fragColour;
-in vec3 particle_colour;
+in vec3 birb_colour;
 void main()
 {
     vec2 circle_coord = 2.0 * gl_PointCoord - 1.0;
@@ -9,5 +9,5 @@ void main()
     {
         discard;
     }
-    fragColour=vec4(particle_colour,1.0);
+    fragColour=vec4(birb_colour,1.0);
 }
