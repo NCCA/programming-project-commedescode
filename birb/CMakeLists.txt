@@ -25,8 +25,8 @@ target_sources(${TargetName} PRIVATE
     include/NGLScene.h
     include/WindowParams.h
     ui/MainWindow.ui
-    shaders/ParticleFragment.glsl
-    shaders/ParticleVertex.glsl
+    shaders/birbFragment.glsl
+    shaders/birbVertex.glsl
 )
 target_include_directories(${TargetName} PRIVATE include)
 target_link_libraries(${TargetName} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
