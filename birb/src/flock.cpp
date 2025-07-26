@@ -38,23 +38,122 @@ size_t flock::size() const
   return m_maxbirbs;
 }
 
-void flock::birthbirbs()
+// Boid rules
+void flock::applyBoidsRules(size_t i, float _dt)
 {
-  auto births = static_cast<int>(ngl::Random::randomPositiveNumber(m_numPerFrame));
+    if(m_state[i] == birbState::Dead) return;
 
-  for(size_t i=0; i<births; ++i)
-  {
-    for(size_t p=0; p<m_maxbirbs; ++p)
-    {
-      if(m_state[p] == birbState::Dead)
-      {
-        resetbirb(p);
-        m_state[p] = birbState::Active;
-        break;
-      }
+    ngl::Vec3 separation = getSeparation(i);
+    ngl::Vec3 alignment = getAlignment(i);
+    ngl::Vec3 cohesion = getCohesion(i);
+
+    m_pdir[i] += (separation + alignment + cohesion) * _dt;
+
+    // Limit speed
+    if(m_pdir[i].length() > m_maxSpeed) {
+        m_pdir[i] = m_pdir[i].normalize() * m_maxSpeed;
     }
- }
 }
+
+ngl::Vec3 flock::getSeparation(size_t i)
+{
+    ngl::Vec3 steer(0,0,0);
+    int count = 0;
+
+    for(size_t j = 0; j < m_maxbirbs; ++j) {
+        if(i != j && m_state[j] == birbState::Active) {
+            float distance = (m_ppos[i] - m_ppos[j]).length();
+            if(distance > 0 && distance < m_neighborRadius) {
+                ngl::Vec3 diff = m_ppos[i] - m_ppos[j];
+                diff.normalize();
+                diff /= distance; // Weight by distance
+                steer += diff;
+                count++;
+            }
+        }
+    }
+
+    if(count > 0) {
+        steer /= count;
+        steer.normalize();
+        steer *= m_maxSpeed;
+        steer -= m_pdir[i];
+    }
+
+    return steer * 1.5f; // Separation weight
+}
+
+ngl::Vec3 flock::getAlignment(size_t i)
+{
+    ngl::Vec3 sum(0,0,0);
+    int count = 0;
+
+    for(size_t j = 0; j < m_maxbirbs; ++j) {
+        if(i != j && m_state[j] == birbState::Active) {
+            float distance = (m_ppos[i] - m_ppos[j]).length();
+            if(distance > 0 && distance < m_neighborRadius) {
+                sum += m_pdir[j];
+                count++;
+            }
+        }
+    }
+
+    if(count > 0) {
+        sum /= count;
+        sum.normalize();
+        sum *= m_maxSpeed;
+        return (sum - m_pdir[i]) * 1.0f; // Alignment weight
+    }
+
+    return ngl::Vec3(0,0,0);
+}
+
+ngl::Vec3 flock::getCohesion(size_t i)
+{
+    ngl::Vec3 sum(0,0,0);
+    int count = 0;
+
+    for(size_t j = 0; j < m_maxbirbs; ++j) {
+        if(i != j && m_state[j] == birbState::Active) {
+            float distance = (m_ppos[i] - m_ppos[j]).length();
+            if(distance > 0 && distance < m_neighborRadius) {
+                sum += ngl::Vec3(m_ppos[j].m_x, m_ppos[j].m_y, m_ppos[j].m_z);
+                count++;
+            }
+        }
+    }
+
+    if(count > 0) {
+        sum /= count;
+        ngl::Vec3 steer = sum - ngl::Vec3(m_ppos[i].m_x, m_ppos[i].m_y, m_ppos[i].m_z);
+        steer.normalize();
+        steer *= m_maxSpeed;
+        return (steer - m_pdir[i]) * 1.0f; // Cohesion weight
+    }
+
+    return ngl::Vec3(0,0,0);
+}
+
+//
+// void flock::birthbirbs()
+// {
+//   auto births = static_cast<int>(ngl::Random::randomPositiveNumber(m_numPerFrame));
+//
+//   for(size_t i=0; i<births; ++i)
+//   {
+//     for(size_t p=0; p<m_maxbirbs; ++p)
+//     {
+//       if(m_state[p] == birbState::Dead)
+//       {
+//         resetbirb(p);
+//         m_state[p] = birbState::Active;
+//         break;
+//       }
+//     }
+//  }
+// }
+
+
 
 void flock::update(float _dt)
 {

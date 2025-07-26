@@ -23,6 +23,12 @@ public :
 public slots :
     void setNumPerFrame(int _value){m_numPerFrame=_value;}
 private :
+    void applyBoidsRules(size_t i, float _dt);
+    ngl::Vec3 getSeparation(size_t i);
+    ngl::Vec3 getAlignment(size_t i);
+    ngl::Vec3 getCohesion(size_t i);
+    float m_maxSpeed = 2.0f;  // Add this member variable
+    float m_neighborRadius = 5.0f;  // Add this too
     ngl::Vec3 m_pos;
     std::vector<ngl::Vec4> m_ppos;
     std::vector<ngl::Vec3> m_pdir;
