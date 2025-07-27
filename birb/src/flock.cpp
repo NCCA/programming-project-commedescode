@@ -44,16 +44,16 @@ void flock::applyBoidsRules(size_t i, float _dt)
 {
     if(m_state[i] == birbState::Active) return;
 
-    ngl::Vec3 separation = getSeparation(i);
-    ngl::Vec3 alignment = getAlignment(i);
-    ngl::Vec3 cohesion = getCohesion(i);
+    ngl::Vec3 separation = getSeparation(i) *0.5f;
+    ngl::Vec3 alignment = getAlignment(i) * 2.0f;
+    ngl::Vec3 cohesion = getCohesion(i) * 2.0f;
 
     m_pdir[i] += (separation + alignment + cohesion) * _dt;
 
     // Limit speed
-    if(m_pdir[i].length() > m_maxSpeed) {
+    if(m_pdir[i].length() > 1.0f) {
         m_pdir[i].normalize();
-        m_pdir[i] *= m_maxSpeed;
+        m_pdir[i] *= 1.0f;
     }
 }
 
@@ -223,13 +223,13 @@ void flock::resetbirb(size_t _i)
 {
   ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
     m_state[_i] = birbState::Active;  // Not Dead!
-    m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.0f);
-    m_pdir[_i] = emitDir * ngl::Random::randomPositiveNumber()+randomVectorOnSphere() * m_spread;
-    m_pdir[_i].m_y=std::abs(m_pdir[_i].m_y);
+    m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.1f);
+    m_pdir[_i] = emitDir * 0.1f +randomVectorOnSphere() * 0.5f;
+    m_pdir[_i].m_y=std::abs(m_pdir[_i].m_y) * 0.1f;
     m_psize[_i]=0.01f;
     m_plife[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
     m_pcolour[_i]=ngl::Random::getRandomColour3();
-    m_state[_i]= birbState::Dead;
+    m_state[_i]= birbState::Active;
 }
 
 
