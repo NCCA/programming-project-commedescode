@@ -47,8 +47,9 @@ void flock::applyBoidsRules(size_t i, float _dt)
     ngl::Vec3 separation = getSeparation(i) *0.5f;
     ngl::Vec3 alignment = getAlignment(i) * 2.0f;
     ngl::Vec3 cohesion = getCohesion(i) * 2.0f;
+    ngl::Vec3 wander = getWander(i) * 0.5f;  // Add wandering
 
-    m_pdir[i] += (separation + alignment + cohesion) * _dt;
+    m_pdir[i] += (separation + alignment + cohesion + wander) * _dt;
 
     // Limit speed
     if(m_pdir[i].length() > 1.0f) {
@@ -280,4 +281,19 @@ void flock::move(float _dx, float _dy, float _dz)
 void flock::setSpread(float _value)
 {
     m_spread=_value;
+}
+
+ngl::Vec3 flock::getWander(size_t i)
+{
+    // Random steering force to keep them moving
+    static float wanderAngle = 0.0f;
+    wanderAngle += ngl::Random::randomNumber() * 0.3f; // Change direction randomly
+
+    ngl::Vec3 wander(
+        std::cos(wanderAngle) * 0.2f,
+        std::sin(wanderAngle * 0.5f) * 0.1f, // Gentle up/down movement
+        std::sin(wanderAngle) * 0.2f
+    );
+
+    return wander;
 }

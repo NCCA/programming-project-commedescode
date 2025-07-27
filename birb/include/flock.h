@@ -27,6 +27,8 @@ private :
     ngl::Vec3 getSeparation(size_t i);
     ngl::Vec3 getAlignment(size_t i);
     ngl::Vec3 getCohesion(size_t i);
+    ngl::Vec3 getWander(size_t i);
+    ngl::Vec3 m_wanderTarget;
     float m_maxSpeed = 2.0f;  // Add this member variable
     float m_neighborRadius = 5.0f;  // Add this too
     ngl::Vec3 m_pos;
@@ -38,13 +40,14 @@ private :
     enum class birbState : bool {Active,Dead};
     std::vector<birbState> m_state;
     size_t m_maxbirbs;
-    size_t m_maxAlive = 1000;
+    size_t m_maxAlive = 120;
     int m_numPerFrame = 120;
     void resetbirb(size_t _i);
     void birthbirbs();
     ngl::Vec3 randomVectorOnSphere(float _radius = 1.0f);
     std::unique_ptr<ngl::MultiBufferVAO> m_vao;
     float m_spread = 5.5f;
+
 
 };
 
