@@ -22,6 +22,7 @@ m_maxbirbs{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_pos}
   for(size_t i=0; i<m_maxbirbs; ++i)
   {
     resetbirb(i);
+      m_state[i] = birbState::Active;
   }
 
     m_vao = ngl::vaoFactoryCast<ngl::MultiBufferVAO>(
@@ -41,7 +42,7 @@ size_t flock::size() const
 // Boid rules
 void flock::applyBoidsRules(size_t i, float _dt)
 {
-    if(m_state[i] == birbState::Dead) return;
+    if(m_state[i] == birbState::Active) return;
 
     ngl::Vec3 separation = getSeparation(i);
     ngl::Vec3 alignment = getAlignment(i);
@@ -51,7 +52,8 @@ void flock::applyBoidsRules(size_t i, float _dt)
 
     // Limit speed
     if(m_pdir[i].length() > m_maxSpeed) {
-        m_pdir[i] = m_pdir[i].normalize() * m_maxSpeed;
+        m_pdir[i].normalize();
+        m_pdir[i] *= m_maxSpeed;
     }
 }
 
@@ -64,7 +66,8 @@ ngl::Vec3 flock::getSeparation(size_t i)
         if(i != j && m_state[j] == birbState::Active) {
             float distance = (m_ppos[i] - m_ppos[j]).length();
             if(distance > 0 && distance < m_neighborRadius) {
-                ngl::Vec3 diff = m_ppos[i] - m_ppos[j];
+                ngl::Vec3 diff = ngl::Vec3(m_ppos[i].m_x, m_ppos[i].m_y, m_ppos[i].m_z) -
+                 ngl::Vec3(m_ppos[j].m_x, m_ppos[j].m_y, m_ppos[j].m_z);
                 diff.normalize();
                 diff /= distance; // Weight by distance
                 steer += diff;
@@ -154,49 +157,79 @@ ngl::Vec3 flock::getCohesion(size_t i)
 // }
 
 
+// void flock::update(float _dt)
+// {
+//   const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
+//
+//   auto numAlive = std::count_if(std::begin(m_state),std::end(m_state),
+//                                 [](auto p){ return p == birbState::Active;});
+//
+  // if(numAlive < m_maxAlive)
+  // {
+  //   birthbirbs();
+  // }
+ //
+ // #pragma omp parallel for
+ // for(size_t i=0; i<m_maxbirbs; ++i)
+ // {
+ //    if(m_state[i] == birbState::Dead)
+ //      continue;
+ //    m_pdir[i] +=gravity * _dt * 0.5f;
+ //    m_ppos[i] += m_pdir[i] * 0.5f;
+ //    m_psize[i]+=0.1f;
+ //    m_psize[i] = std::clamp(m_psize[i],0.0f, 10.0f);
+ //    m_ppos[i].m_w=m_psize[i];
+ //    if(--m_plife[i] <=0 || m_ppos[i].m_y <=0.0f)
+ //    {
+ //      resetbirb(i);
+ //    }
+ //  }
 
 void flock::update(float _dt)
 {
-  const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
+    const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
 
-  auto numAlive = std::count_if(std::begin(m_state),std::end(m_state),
-                                [](auto p){ return p == birbState::Active;});
+    // Your other update code here...
 
-  if(numAlive < m_maxAlive)
-  {
-    birthbirbs();
-  }
- #pragma omp parallel for
- for(size_t i=0; i<m_maxbirbs; ++i)
- {
-    if(m_state[i] == birbState::Dead)
-      continue;
-    m_pdir[i] +=gravity * _dt * 0.5f;
-    m_ppos[i] += m_pdir[i] * 0.5f;
-    m_psize[i]+=0.1f;
-    m_psize[i] = std::clamp(m_psize[i],0.0f, 10.0f);
-    m_ppos[i].m_w=m_psize[i];
-    if(--m_plife[i] <=0 || m_ppos[i].m_y <=0.0f)
+#pragma omp parallel for
+    for(size_t i=0; i<m_maxbirbs; ++i)
     {
-      resetbirb(i);
+        if(m_state[i] == birbState::Dead)
+            continue;
+
+        // For boids, you want to REPLACE this particle behavior:
+        // m_pdir[i] +=gravity * _dt * 0.5f;  // Comment out gravity
+        // m_ppos[i] += m_pdir[i] * 0.5f;
+
+        // With boids behavior:
+        applyBoidsRules(i, _dt);  // Add this line!
+        m_ppos[i] += m_pdir[i] * _dt;
+
+        m_psize[i]+=0.1f;
+        m_psize[i] = std::clamp(m_psize[i],0.0f, 10.0f);
+        m_ppos[i].m_w=m_psize[i];
+
+        // For boids, comment out the death system:
+        // if(--m_plife[i] <=0 || m_ppos[i].m_y <=0.0f)
+        // {
+        //   resetbirb(i);
+        // }
     }
-  }
-
-
-}
+} // Don't forget this closing brace!
 
 
 
 void flock::resetbirb(size_t _i)
 {
   ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
-  m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.0f);
-  m_pdir[_i] = emitDir * ngl::Random::randomPositiveNumber()+randomVectorOnSphere() * m_spread;
-  m_pdir[_i].m_y=std::abs(m_pdir[_i].m_y);
-  m_psize[_i]=0.01f;
-  m_plife[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
-  m_pcolour[_i]=ngl::Random::getRandomColour3();
-  m_state[_i]= birbState::Dead;
+    m_state[_i] = birbState::Active;  // Not Dead!
+    m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.0f);
+    m_pdir[_i] = emitDir * ngl::Random::randomPositiveNumber()+randomVectorOnSphere() * m_spread;
+    m_pdir[_i].m_y=std::abs(m_pdir[_i].m_y);
+    m_psize[_i]=0.01f;
+    m_plife[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
+    m_pcolour[_i]=ngl::Random::getRandomColour3();
+    m_state[_i]= birbState::Dead;
 }
 
 
