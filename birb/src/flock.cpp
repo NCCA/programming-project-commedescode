@@ -44,17 +44,17 @@ void flock::applyBoidsRules(size_t i, float _dt)
 {
     if(m_state[i] == birbState::Active) return;
 
-    ngl::Vec3 separation = getSeparation(i) *0.5f;
+    ngl::Vec3 separation = getSeparation(i) *1.5f;
     ngl::Vec3 alignment = getAlignment(i) * 2.0f;
-    ngl::Vec3 cohesion = getCohesion(i) * 2.0f;
-    ngl::Vec3 wander = getWander(i) * 0.5f;  // Add wandering
+    ngl::Vec3 cohesion = getCohesion(i) * 0.8f;
+    ngl::Vec3 wander = getWander(i) * 2.0;  // Add wandering
 
     m_pdir[i] += (separation + alignment + cohesion + wander) * _dt;
 
     // Limit speed
-    if(m_pdir[i].length() > 1.0f) {
+    if(m_pdir[i].length() > 3.0f) {
         m_pdir[i].normalize();
-        m_pdir[i] *= 1.0f;
+        m_pdir[i] *= 3.0f;
     }
 }
 
@@ -285,14 +285,15 @@ void flock::setSpread(float _value)
 
 ngl::Vec3 flock::getWander(size_t i)
 {
-    // Random steering force to keep them moving
-    static float wanderAngle = 0.0f;
-    wanderAngle += ngl::Random::randomNumber() * 0.3f; // Change direction randomly
+    // Make each boid have its own wandering behavior
+    static std::vector<float> wanderAngles(m_maxbirbs, 0.0f);
+
+    wanderAngles[i] += (ngl::Random::randomNumber() - 0.5f) * 0.5f; // More random
 
     ngl::Vec3 wander(
-        std::cos(wanderAngle) * 0.2f,
-        std::sin(wanderAngle * 0.5f) * 0.1f, // Gentle up/down movement
-        std::sin(wanderAngle) * 0.2f
+        std::cos(wanderAngles[i]) * 1.0f,     // Stronger X movement
+        std::sin(wanderAngles[i] * 0.3f) * 0.3f,  // Gentle Y movement
+        std::sin(wanderAngles[i]) * 1.0f      // Stronger Z movement
     );
 
     return wander;
