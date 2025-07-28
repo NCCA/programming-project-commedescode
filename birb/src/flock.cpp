@@ -64,17 +64,18 @@ void flock::applyBoidsRules(size_t i, float _dt)
 {
     if(m_state[i] != birbState::Active) return;
 
-    ngl::Vec3 separation = getSeparation(i) * 1.5f;
-    ngl::Vec3 alignment = getAlignment(i) * 2.0f;
-    ngl::Vec3 cohesion = getCohesion(i) * 0.8f;
+    ngl::Vec3 separation = getSeparation(i) * 0.8f;
+    ngl::Vec3 alignment = getAlignment(i) * 1.5f;
+    ngl::Vec3 cohesion = getCohesion(i) * 1.0f;
     ngl::Vec3 wander = getWander(i) * 2.0f;  // Add wandering
+    ngl::Vec3 bounds = getBounds(i);
 
-    m_pdir[i] += (separation + alignment + cohesion + wander) * _dt;
+    m_pdir[i] += (separation + alignment + cohesion + wander + bounds) * _dt;
 
     // Limit speed
-    if(m_pdir[i].length() > 3.0f) {
+    if(m_pdir[i].length() > 5.0f) {
         m_pdir[i].normalize();
-        m_pdir[i] *= 3.0f;
+        m_pdir[i] *= 5.0f;
     }
 }
 
@@ -135,7 +136,7 @@ ngl::Vec3 flock::getAlignment(size_t i)
         sum /= count;
         sum.normalize();
         sum *= m_maxSpeed;
-        return (sum - m_pdir[i]) * 1.0f; // Alignment weight
+        return (sum - m_pdir[i]) * 1.5f; // Alignment weight
     }
 
     return ngl::Vec3(0,0,0);
@@ -314,9 +315,9 @@ ngl::Vec3 flock::getWander(size_t i)
     m_wanderAngles[i] += (ngl::Random::randomNumber() - 0.5f) * 0.3f;
 
     ngl::Vec3 wander(
-        std::cos(m_wanderAngles[i]) * 1.0f,
+        std::cos(m_wanderAngles[i]) * 2.0f,
         std::sin(m_wanderAngles[i] * 0.3f) * 0.3f,
-        std::sin(m_wanderAngles[i]) * 1.0f
+        std::sin(m_wanderAngles[i]) * 2.0f
     );
 
     return wander;
@@ -349,4 +350,21 @@ void flock::setBirbSize(float size) {
             m_ppos[i].m_w = m_birbSize;  // The w component controls point size
         }
     }
+}
+
+ngl::Vec3 flock::getBounds(size_t i)
+{
+    ngl::Vec3 force(0,0,0);
+    float boundary = 20.0f;  // Adjust this value
+
+    ngl::Vec3 pos(m_ppos[i].m_x, m_ppos[i].m_y, m_ppos[i].m_z);
+
+    if(pos.m_x > boundary) force.m_x = -1.0f;
+    if(pos.m_x < -boundary) force.m_x = 1.0f;
+    if(pos.m_y > boundary) force.m_y = -1.0f;
+    if(pos.m_y < -boundary) force.m_y = 1.0f;
+    if(pos.m_z > boundary) force.m_z = -1.0f;
+    if(pos.m_z < -boundary) force.m_z = 1.0f;
+
+    return force * 5.0f;  // Boundary force strength
 }

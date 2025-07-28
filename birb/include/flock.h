@@ -53,6 +53,7 @@ private :
     std::unique_ptr<ngl::MultiBufferVAO> m_vao;
     float m_spread = 5.5f;
     float m_birbSize = 5.0f;  // Add this member variable
+    ngl::Vec3 getBounds(size_t i);
 
 
 };
