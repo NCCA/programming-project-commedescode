@@ -10,28 +10,47 @@
 #include <ngl/Util.h>
 #include <ngl/VAOFactory.h>
 #include <algorithm>
-flock::flock(size_t _num, size_t _maxAlive, int _numPerFrame, ngl::Vec3 _pos) :
-m_maxbirbs{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_pos}
-{
-  m_ppos.resize(m_maxbirbs);
-  m_pcolour.resize(m_maxbirbs);
-  m_pdir.resize(m_maxbirbs);
-  m_plife.resize(m_maxbirbs);
-  m_psize.resize(m_maxbirbs);
-  m_state.resize(m_maxbirbs);
-  for(size_t i=0; i<m_maxbirbs; ++i)
-  {
-    resetbirb(i);
-      m_state[i] = birbState::Active;
-  }
+// flock::flock(size_t _num, size_t _maxAlive, int _numPerFrame, ngl::Vec3 _pos) :
+// m_maxbirbs{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame},m_pos{_pos}
+// {
+//   m_ppos.resize(m_maxbirbs);
+//   m_pcolour.resize(m_maxbirbs);
+//   m_pdir.resize(m_maxbirbs);
+//   m_plife.resize(m_maxbirbs);
+//   m_psize.resize(m_maxbirbs);
+//   m_state.resize(m_maxbirbs);
+//   m_wanderAngles.resize(m_maxbirbs, 0.0f);
+//   for(size_t i=0; i<m_maxbirbs; ++i)
+//   {
+//     resetbirb(i);
+//       m_state[i] = birbState::Active;
+//   }
+//
+//     m_vao = ngl::vaoFactoryCast<ngl::MultiBufferVAO>(
+//       ngl::VAOFactory::createVAO(ngl::multiBufferVAO,GL_POINTS)
+//       );
+//     m_vao->bind();
+//     m_vao->setData(ngl::MultiBufferVAO::VertexData(0,0)); // index 0 points
+//     m_vao->setData(ngl::MultiBufferVAO::VertexData(0,0)); // index 1 colours
+//     m_vao->unbind();
+// }
 
+// REPLACE your entire constructor with this:
+flock::flock(size_t _num, size_t _maxAlive, int _numPerFrame, ngl::Vec3 _pos) :
+m_maxbirbs{_num}, m_maxAlive{_maxAlive}, m_numPerFrame{_numPerFrame}, m_pos{_pos}
+{
+    // Initialize VAO first
     m_vao = ngl::vaoFactoryCast<ngl::MultiBufferVAO>(
-      ngl::VAOFactory::createVAO(ngl::multiBufferVAO,GL_POINTS)
-      );
+        ngl::VAOFactory::createVAO(ngl::multiBufferVAO,GL_POINTS)
+    );
     m_vao->bind();
     m_vao->setData(ngl::MultiBufferVAO::VertexData(0,0)); // index 0 points
     m_vao->setData(ngl::MultiBufferVAO::VertexData(0,0)); // index 1 colours
     m_vao->unbind();
+
+    // Start with random number between 2-20 boids
+    size_t startingBirbs = 2 + static_cast<size_t>(ngl::Random::randomPositiveNumber(19));
+    setBirbCount(startingBirbs);
 }
 
 size_t flock::size() const
@@ -40,14 +59,15 @@ size_t flock::size() const
 }
 
 // Boid rules
+// Replace your entire applyBoidsRules function with this:
 void flock::applyBoidsRules(size_t i, float _dt)
 {
-    if(m_state[i] == birbState::Active) return;
+    if(m_state[i] != birbState::Active) return;
 
-    ngl::Vec3 separation = getSeparation(i) *1.5f;
+    ngl::Vec3 separation = getSeparation(i) * 1.5f;
     ngl::Vec3 alignment = getAlignment(i) * 2.0f;
     ngl::Vec3 cohesion = getCohesion(i) * 0.8f;
-    ngl::Vec3 wander = getWander(i) * 2.0;  // Add wandering
+    ngl::Vec3 wander = getWander(i) * 2.0f;  // Add wandering
 
     m_pdir[i] += (separation + alignment + cohesion + wander) * _dt;
 
@@ -58,6 +78,7 @@ void flock::applyBoidsRules(size_t i, float _dt)
     }
 }
 
+// Replace your getSeparation function with this optimized version:
 ngl::Vec3 flock::getSeparation(size_t i)
 {
     ngl::Vec3 steer(0,0,0);
@@ -65,10 +86,18 @@ ngl::Vec3 flock::getSeparation(size_t i)
 
     for(size_t j = 0; j < m_maxbirbs; ++j) {
         if(i != j && m_state[j] == birbState::Active) {
-            float distance = (m_ppos[i] - m_ppos[j]).length();
-            if(distance > 0 && distance < m_neighborRadius) {
-                ngl::Vec3 diff = ngl::Vec3(m_ppos[i].m_x, m_ppos[i].m_y, m_ppos[i].m_z) -
-                 ngl::Vec3(m_ppos[j].m_x, m_ppos[j].m_y, m_ppos[j].m_z);
+            // Optimized distance calculation
+            ngl::Vec3 diff = ngl::Vec3(m_ppos[i].m_x - m_ppos[j].m_x,
+                                      m_ppos[i].m_y - m_ppos[j].m_y,
+                                      m_ppos[i].m_z - m_ppos[j].m_z);
+            float distanceSquared = diff.lengthSquared();
+
+            // Early exit if too far (avoids expensive sqrt)
+            if(distanceSquared > m_neighborRadius * m_neighborRadius) continue;
+
+            float distance = std::sqrt(distanceSquared);
+
+            if(distance > 0) {
                 diff.normalize();
                 diff /= distance; // Weight by distance
                 steer += diff;
@@ -186,11 +215,10 @@ ngl::Vec3 flock::getCohesion(size_t i)
  //    }
  //  }
 
+// REPLACE your update function with this:
 void flock::update(float _dt)
 {
     const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
-
-    // Your other update code here...
 
 #pragma omp parallel for
     for(size_t i=0; i<m_maxbirbs; ++i)
@@ -198,41 +226,38 @@ void flock::update(float _dt)
         if(m_state[i] == birbState::Dead)
             continue;
 
-        // For boids, you want to REPLACE this particle behavior:
-        // m_pdir[i] +=gravity * _dt * 0.5f;  // Comment out gravity
-        // m_ppos[i] += m_pdir[i] * 0.5f;
-
-        // With boids behavior:
-        applyBoidsRules(i, _dt);  // Add this line!
+        // Apply boids behavior
+        applyBoidsRules(i, _dt);
         m_ppos[i] += m_pdir[i] * _dt;
 
-        m_psize[i]+=0.1f;
-        m_psize[i] = std::clamp(m_psize[i],0.0f, 10.0f);
-        m_ppos[i].m_w=m_psize[i];
+        // Keep size constant (remove the growing size)
+        m_psize[i] = m_birbSize;
+        m_ppos[i].m_w = m_birbSize;
+    }
+}
 
         // For boids, comment out the death system:
         // if(--m_plife[i] <=0 || m_ppos[i].m_y <=0.0f)
         // {
         //   resetbirb(i);
         // }
-    }
-} // Don't forget this closing brace!
+// Don't forget this closing brace!
 
 
 
+// REPLACE your resetbirb function with this:
 void flock::resetbirb(size_t _i)
 {
-  ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
-    m_state[_i] = birbState::Active;  // Not Dead!
-    m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z,0.1f);
-    m_pdir[_i] = emitDir * 0.1f +randomVectorOnSphere() * 0.5f;
-    m_pdir[_i].m_y=std::abs(m_pdir[_i].m_y) * 0.1f;
-    m_psize[_i]=0.01f;
-    m_plife[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
-    m_pcolour[_i]=ngl::Random::getRandomColour3();
-    m_state[_i]= birbState::Active;
+    ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
+    m_state[_i] = birbState::Active;
+    m_ppos[_i].set(m_pos.m_x,m_pos.m_y,m_pos.m_z, m_birbSize);  // Use m_birbSize for w component
+    m_pdir[_i] = emitDir * 0.1f + randomVectorOnSphere() * 0.5f;
+    m_pdir[_i].m_y = std::abs(m_pdir[_i].m_y) * 0.1f;
+    m_psize[_i] = m_birbSize;  // Use m_birbSize instead of 0.1f
+    m_plife[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(10));
+    m_pcolour[_i] = ngl::Random::getRandomColour3();
+    m_state[_i] = birbState::Active;
 }
-
 
 ngl::Vec3 flock::randomVectorOnSphere(float _radius)
 {
@@ -285,16 +310,43 @@ void flock::setSpread(float _value)
 
 ngl::Vec3 flock::getWander(size_t i)
 {
-    // Make each boid have its own wandering behavior
-    static std::vector<float> wanderAngles(m_maxbirbs, 0.0f);
-
-    wanderAngles[i] += (ngl::Random::randomNumber() - 0.5f) * 0.5f; // More random
+    // Update this boid's wander angle
+    m_wanderAngles[i] += (ngl::Random::randomNumber() - 0.5f) * 0.3f;
 
     ngl::Vec3 wander(
-        std::cos(wanderAngles[i]) * 1.0f,     // Stronger X movement
-        std::sin(wanderAngles[i] * 0.3f) * 0.3f,  // Gentle Y movement
-        std::sin(wanderAngles[i]) * 1.0f      // Stronger Z movement
+        std::cos(m_wanderAngles[i]) * 1.0f,
+        std::sin(m_wanderAngles[i] * 0.3f) * 0.3f,
+        std::sin(m_wanderAngles[i]) * 1.0f
     );
 
     return wander;
+}
+
+void flock::setBirbCount(size_t newCount) {
+    m_maxbirbs = newCount;
+    // Resize all vectors
+    m_ppos.resize(m_maxbirbs);
+    m_pcolour.resize(m_maxbirbs);
+    m_pdir.resize(m_maxbirbs);
+    m_plife.resize(m_maxbirbs);
+    m_psize.resize(m_maxbirbs);
+    m_state.resize(m_maxbirbs);
+    m_wanderAngles.resize(m_maxbirbs, 0.0f);
+
+    // Initialize new boids
+    for(size_t i = 0; i < m_maxbirbs; ++i) {
+        resetbirb(i);
+        m_state[i] = birbState::Active;
+    }
+}
+
+void flock::setBirbSize(float size) {
+    m_birbSize = std::clamp(size, 0.05f, 5.0f);
+    // Update all existing boids
+    for(size_t i = 0; i < m_maxbirbs; ++i) {
+        if(m_state[i] == birbState::Active) {
+            m_psize[i] = m_birbSize;
+            m_ppos[i].m_w = m_birbSize;  // The w component controls point size
+        }
+    }
 }

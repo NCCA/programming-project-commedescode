@@ -19,6 +19,10 @@ public :
     void render() const;
     void move(float _dx, float _dy, float _dz);
     void setSpread(float _value);
+    void setBirbCount(size_t newCount);
+    void setBirbSize(float size);
+    float getBirbSize() const { return m_birbSize; }
+
 
 public slots :
     void setNumPerFrame(int _value){m_numPerFrame=_value;}
@@ -28,9 +32,10 @@ private :
     ngl::Vec3 getAlignment(size_t i);
     ngl::Vec3 getCohesion(size_t i);
     ngl::Vec3 getWander(size_t i);
+    std::vector<float> m_wanderAngles;
     ngl::Vec3 m_wanderTarget;
-    float m_maxSpeed = 2.0f;  // Add this member variable
-    float m_neighborRadius = 5.0f;  // Add this too
+    float m_maxSpeed = 5.0f;  // Add this member variable
+    float m_neighborRadius = 2.0f;  // Add this too
     ngl::Vec3 m_pos;
     std::vector<ngl::Vec4> m_ppos;
     std::vector<ngl::Vec3> m_pdir;
@@ -40,13 +45,14 @@ private :
     enum class birbState : bool {Active,Dead};
     std::vector<birbState> m_state;
     size_t m_maxbirbs;
-    size_t m_maxAlive = 120;
-    int m_numPerFrame = 120;
+    size_t m_maxAlive = 50;
+    int m_numPerFrame = 50;
     void resetbirb(size_t _i);
     void birthbirbs();
     ngl::Vec3 randomVectorOnSphere(float _radius = 1.0f);
     std::unique_ptr<ngl::MultiBufferVAO> m_vao;
     float m_spread = 5.5f;
+    float m_birbSize = 5.0f;  // Add this member variable
 
 
 };
