@@ -25,19 +25,25 @@ void NGLScene::resizeGL(int _w , int _h)
   m_project=ngl::perspective(45.0f, float(m_win.width)/float(m_win.height), 0.001f,200.0f);
 }
 
+void NGLScene::setShowGrid(bool show)
+{
+  m_showGrid = show;
+  update(); // Force a repaint
+}
 
 void NGLScene::initializeGL()
 {
   // we must call that first before any other GL commands to load and link the
   // gl commands from the lib, if that is not done program will crash
   ngl::NGLInit::initialize();
-  glClearColor(0.7f, 0.7f, 0.7f, 1.0f);			   // Grey Background
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);			   // Black Background
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
-  ngl::VAOPrimitives::createSphere("sphere",1.0f,20);
+  ngl::VAOPrimitives::createCone("Cone", 1.0f, 3.0f, 20, 10);
   ngl::VAOPrimitives::createLineGrid("floor",100,100,50);
+
   m_flock=std::make_unique<flock>(10000,10000,800,ngl::Vec3(0,0,0));
   ngl::ShaderLib::loadShader("birbShader","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/birbVertex.glsl","/home/s5610456/CDC/programming-project-commedescode/birb/shaders/birbFragment.glsl");
   ngl::ShaderLib::use("birbShader");
@@ -71,7 +77,10 @@ void NGLScene::paintGL()
   ngl::ShaderLib::use(ngl::nglColourShader);
   ngl::ShaderLib::setUniform("MVP",m_project*m_view*mouseRotation);
   ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,1.0f,1.0f);
-  ngl::VAOPrimitives::draw("floor");
+  if (m_showGrid) {
+    // Set up floor material/shader
+    ngl::VAOPrimitives::draw("floor");
+  }
 
   ngl::ShaderLib::use(ngl::nglTextShader);
  // m_text->renderText(10,700,"birb System");

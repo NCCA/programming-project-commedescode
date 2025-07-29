@@ -53,6 +53,7 @@ class NGLScene : public QOpenGLWidget
 public slots :
 
     void setSpread(double _value);
+    void setShowGrid(bool show);
 
 signals :
     void glInitialized();
@@ -104,6 +105,7 @@ private:
     QSet<Qt::Key> m_keysPressed;
 
     std::unique_ptr<ngl::Text> m_text;
+    bool m_showGrid = false; // Default to false
 
 };
 
