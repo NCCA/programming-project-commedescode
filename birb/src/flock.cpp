@@ -64,10 +64,15 @@ void flock::applyBoidsRules(size_t i, float _dt)
 {
     if(m_state[i] != birbState::Active) return;
 
-    ngl::Vec3 separation = getSeparation(i) * 0.8f;
-    ngl::Vec3 alignment = getAlignment(i) * 1.5f;
-    ngl::Vec3 cohesion = getCohesion(i) * 1.0f;
-    ngl::Vec3 wander = getWander(i) * 2.0f;  // Add wandering
+    // ngl::Vec3 separation = getSeparation(i) * 0.8f;
+    // ngl::Vec3 alignment = getAlignment(i) * 1.5f;
+    // ngl::Vec3 cohesion = getCohesion(i) * 1.0f;
+    // ngl::Vec3 wander = getWander(i) * 2.0f;  // Add wandering
+    // ngl::Vec3 bounds = getBounds(i);
+    ngl::Vec3 separation = getSeparation(i) * m_separationWeight;
+    ngl::Vec3 alignment = getAlignment(i) * m_alignmentWeight;
+    ngl::Vec3 cohesion = getCohesion(i) * m_cohesionWeight;
+    ngl::Vec3 wander = getWander(i) * m_wanderWeight;
     ngl::Vec3 bounds = getBounds(i);
 
     m_pdir[i] += (separation + alignment + cohesion + wander + bounds) * _dt;

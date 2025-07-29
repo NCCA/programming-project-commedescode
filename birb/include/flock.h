@@ -26,6 +26,11 @@ public :
 
 public slots :
     void setNumPerFrame(int _value){m_numPerFrame=_value;}
+    void setSeparationWeight(double _value) { m_separationWeight = _value; }
+    void setAlignmentWeight(double _value) { m_alignmentWeight = _value; }
+    void setCohesionWeight(double _value) { m_cohesionWeight = _value; }
+    void setWanderWeight(double _value) { m_wanderWeight = _value; }
+
 private :
     void applyBoidsRules(size_t i, float _dt);
     ngl::Vec3 getSeparation(size_t i);
@@ -55,6 +60,11 @@ private :
     float m_birbSize = 5.0f;  // Add this member variable
     ngl::Vec3 getBounds(size_t i);
 
+    // Add these force weight variables
+    float m_separationWeight = 0.8f;
+    float m_alignmentWeight = 1.5f;
+    float m_cohesionWeight = 1.0f;
+    float m_wanderWeight = 2.0f;
 
 };
 
