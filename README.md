@@ -23,3 +23,36 @@ This program follows the Craig Boids Algorithim, which was developed in the 1980
 These variables create believable crowd movement without requiring a leader. 
 
 ## Design and Structure
+### Class Structure
+Flock: Manages collective birb behavior and implements flocking algorithms (separation, alignment, cohesion, wander)
+Individual birb agents are likely represented as data structures within the Flock class
+NGLScene: Handles OpenGL rendering pipeline and camera controls
+NGLSceneMouseControls: Manages mouse-based camera interaction
+MainWindow: Qt-based GUI providing real-time parameter controls
+
+### Design Patterns
+- Object-Oriented with Qt: Core flocking behaviors (getSeparation(), getAlignment(), etc.) as private methods in the Flock class for simplicity and speed.
+- Qt Signal-Slot System: Public slots like setSeparationWeight() allow real-time GUI updates.
+- State Management: BirdState enum (Active/Dead) tracks m_birb lifecycle.
+- Emphasis on clarity and responsiveness over complex patterns.
+
+### Data Structures & Optimization
+Birb Representation (parallel std::vectors):
+- m_birbPosition (Vec4): Position + size
+- m_birbDirection (Vec3): Velocity
+- m_birbColour (Vec3): Visual flair
+- m_birbSize (float): Scaling
+- m_birbLife (int): Lifespan (unused)
+- m_birbState (BirdState): Status
+- m_birbWanderAngles (float): Random movement
+
+### Efficiency Techniques:
+- OpenMP: #pragma omp parallel for parallelizes boids update
+- Early Exit: Distance-squared check avoids unnecessary sqrt()
+- Cache-Friendly Layout: Parallel arrays outperform array-of-structs in batch ops
+
+### Rendering
+- MultiBuffer VAO: Uses NGL’s GPU rendering with separate buffers for position and color
+- Simple Member Access: Direct values (m_separationWeight, etc.) enable responsive tuning
+
+Structure favors high-performance boid simulation with intuitive Qt controls.
