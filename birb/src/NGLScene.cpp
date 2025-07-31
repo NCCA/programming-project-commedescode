@@ -8,18 +8,18 @@
 #include <ngl/Util.h>
 #include <iostream>
 
-//----------------------------------------------------------------------------------------------------------------------
+
 NGLScene::NGLScene(QWidget *_parent) : QOpenGLWidget(_parent)
 {
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 NGLScene::~NGLScene()
 {
   std::cout << "Shutting down NGL, removing VAO's and Shaders\n";
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::resizeGL(int _width, int _height)
 {
   m_window.width = static_cast<int>(_width * devicePixelRatio());
@@ -27,14 +27,14 @@ void NGLScene::resizeGL(int _width, int _height)
   m_projection = ngl::perspective(45.0f, float(m_window.width) / float(m_window.height), 0.001f, 200.0f);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::setShowGrid(bool _show)
 {
   m_showGrid = _show;
   update(); // Force a repaint
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::initializeGL()
 {
   // We must call this first before any other GL commands to load and link the
@@ -60,16 +60,13 @@ void NGLScene::initializeGL()
 
   m_view = ngl::lookAt({0.0f, 40.0f, 80.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f});
   m_previousTime = std::chrono::steady_clock::now();
-
-  // m_text = std::make_unique<ngl::Text>("fonts/DejaVuSansMono.ttf", 16);
-  // m_text->setScreenSize(width(), height());
-  // m_text->setColour(1.0f, 1.0f, 1.0f);
+  
 
   startTimer(10);
   emit glInitialized();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::paintGL()
 {
   // Clear the screen and depth buffer
@@ -94,7 +91,7 @@ void NGLScene::paintGL()
 
   if (m_showGrid)
   {
-    // Set up floor material/shader
+    // Set up floor 
     ngl::VAOPrimitives::draw("floor");
   }
 
@@ -102,13 +99,13 @@ void NGLScene::paintGL()
   // m_text->renderText(10, 700, "Bird System");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::keyReleaseEvent(QKeyEvent *_event)
 {
   m_keysPressed -= (Qt::Key)_event->key();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
   m_keysPressed += (Qt::Key)_event->key();
@@ -140,7 +137,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   update();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::processKeys()
 {
   float deltaX = 0.0f;
@@ -176,7 +173,7 @@ void NGLScene::processKeys()
   m_flock->move(deltaX, deltaY, deltaZ);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
   auto now = std::chrono::steady_clock::now();
@@ -192,7 +189,7 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   update();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::setSpread(double _value)
 {
   m_flock->setSpread(static_cast<float>(_value));
