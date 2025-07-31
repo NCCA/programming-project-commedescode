@@ -61,9 +61,9 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
 <img width="975" height="681" alt="image" src="https://github.com/user-attachments/assets/980ba2d2-cb90-4970-8b87-2fa0a7a24266" />
 
 - (Fig 1)
-   Initially I began the project using ParticleQt by Jon Macey as a starting point. From there I altered it so that the 'particles' would be 'birb's, which would act as the boids and 'emitter' would be the 'flock'.
-  - From there I discarded of the particle logic such as the birth/death algorithim as the number of boids would boids would be constant, unless altered by the user in the user interface I was planning to build later within the project.
-  -  The initial alterations led me to Fig 1 as displayed, a blank UI with no boids, which is due to me not implementing the boid rules yet.
+- Initially I began the project using ParticleQt by Jon Macey as a starting point. From there I altered it so that the 'particles' would be 'birb's, which would act as the boids and 'emitter' would be the 'flock'.
+- From there I discarded of the particle logic such as the birth/death algorithim as the number of boids would boids would be constant, unless altered by the user in the user interface I was planning to build later within the project.
+- The initial alterations led me to Fig 1 as displayed, a blank UI with no boids, which is due to me not implementing the boid rules yet.
 <img width="980" height="675" alt="image" src="https://github.com/user-attachments/assets/7df4c2b0-d538-4350-be63-3ea163861522" />
 
 - (Fig 2)
@@ -77,9 +77,13 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
 <img width="976" height="667" alt="image" src="https://github.com/user-attachments/assets/d318afce-3cad-4294-8037-50a1f5c3da29" />
 
 - Fig 4
-- k 
+- I added user controls so that all boids rules could be controlled.
+- I also allowed the spread, number of birbs, speed and wander to be controlled.
+- I thought it would also be a good idea looking at it to be able to switch on and off the grids visibility so that it could be used if wanted to track their movement. That function did not work yet due to incorrect implementation so the controls were not connected to the gird itself.
 <img width="977" height="659" alt="image" src="https://github.com/user-attachments/assets/70e51008-32f4-4b2f-8677-fb3bd6a01a09" />
-Last that
+
+- Lastly, I got the grid controls working so that the user could now switch it on and off.
+- Alongside that I chose to make the background black to make the boids more visible to the user.
 
 ## Project Evaluation
 x
