@@ -90,7 +90,9 @@ This structure favors high-performance boid simulation with intuitive user contr
 - I believe I have met all my aims I sought after for this project-- specifically the boids simulation implementation as that is what I struggled with first time doing this assignment.
 - I also succsessfully added user controls that work accordingly (as shown in the video attached on brightspace).
 - I wish doing this project I would've made a more detailed diary or more screenshots of the code that I was writing to refer back to for the documentation.
+-  One of the things I attempted to implement was to change the shape of the boids into a more bird like shape such as a 3D cone or pyramid, which would have also shown the direction the boid was facing easier. I initially attempted to add this with looking through the VAO libaries, and then asking Claude and co-pilot, however I struggled to change it after a while so I settled on the spheres. 
 - It would be nice to have added an option for the user to give the boids some obsticles (skyscrapers, donut, etc) to fly around.
+- A visual addition I could have added would be for the boids to change colour when they are closer to one another. 
 
 ## References
 - I used Jon Maceys ParticleQt to build upon of for this project. (https://github.com/NCCA/labcode-jmacey-2/tree/main/ParticleQt) [Last Accessed 31 July 2025]
