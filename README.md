@@ -56,3 +56,16 @@ Birb Representation (parallel std::vectors):
 - Simple Member Access: Direct values (m_separationWeight, etc.) enable responsive tuning
 
 Structure favors high-performance boid simulation with intuitive Qt controls.
+
+# Project Progression
+<img width="975" height="681" alt="image" src="https://github.com/user-attachments/assets/980ba2d2-cb90-4970-8b87-2fa0a7a24266" />
+First this 
+<img width="973" height="647" alt="image" src="https://github.com/user-attachments/assets/3ac9b00f-55a4-4251-8d07-d3ef2232c642" />
+Then this
+<img width="980" height="675" alt="image" src="https://github.com/user-attachments/assets/7df4c2b0-d538-4350-be63-3ea163861522" />
+Then this
+<img width="976" height="667" alt="image" src="https://github.com/user-attachments/assets/d318afce-3cad-4294-8037-50a1f5c3da29" />
+Then
+<img width="977" height="659" alt="image" src="https://github.com/user-attachments/assets/70e51008-32f4-4b2f-8677-fb3bd6a01a09" />
+
+
