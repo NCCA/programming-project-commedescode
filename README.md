@@ -87,7 +87,8 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
 - Alongside that I chose to make the background black to make the boids more visible to the user.
 
 ## Project Evaluation
-
+- I believe I have met all my aims I sought after for this project-- specifically the boids simulation implementation as that is what I struggled with first time doing this assignment.
+- It would be nice to have added an option for the user to give the boids some obsticles (skyscrapers, donut, etc) to fly around 
 
 ## References
 
