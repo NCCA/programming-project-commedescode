@@ -88,7 +88,15 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
 
 ## Project Evaluation
 - I believe I have met all my aims I sought after for this project-- specifically the boids simulation implementation as that is what I struggled with first time doing this assignment.
-- It would be nice to have added an option for the user to give the boids some obsticles (skyscrapers, donut, etc) to fly around 
+- I also succsessfully added user controls that work accordingly (as shown in the video attached on brightspace).
+- I wish doing this project I would've made a more detailed diary or more screenshots of the code that I was writing to refer back to for the documentation.
+- It would be nice to have added an option for the user to give the boids some obsticles (skyscrapers, donut, etc) to fly around.
 
 ## References
+- I used Jon Maceys ParticleQt to build upon of for this project. (https://github.com/NCCA/labcode-jmacey-2/tree/main/ParticleQt) [Last accessed 31 July 2025]
+-  Used NGL Graphics Libary (http://nccastaff.bournemouth.ac.uk/jmacey/GraphicsLib/index.html) [Last Accessed 30 July 2025]
 
+The following I read to refer back to during the project to aid my understanding towards the behaviours and how to implement the logic within my assignment:
+- Coding Adventure: Boids (https://youtu.be/bqtqltqcQhw?si=F-BrRPD3BPAI0X3d) [Last Accessed 29 July 2025]
+- Nature of Code Chapter 5: Autonomous Agents (https://natureofcode.com/autonomous-agents/) [Last Accessed 25 July 2025]
+- Flocks, Herds, and Schools: A Distributed Behavioral Model (https://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/) [Last Accessed 25 July 2025]
