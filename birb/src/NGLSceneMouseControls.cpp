@@ -2,7 +2,7 @@
 #include <QMouseEvent>
 #include <QtGlobal>
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::mouseMoveEvent(QMouseEvent *_event)
 {
   // Note: the method buttons() is the button state when event was called
@@ -43,7 +43,7 @@ void NGLScene::mouseMoveEvent(QMouseEvent *_event)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::mousePressEvent(QMouseEvent *_event)
 {
   // This method is called when the mouse button is pressed in this case we
@@ -69,7 +69,7 @@ void NGLScene::mousePressEvent(QMouseEvent *_event)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::mouseReleaseEvent(QMouseEvent *_event)
 {
   // This event is called when the mouse button is released
@@ -85,7 +85,7 @@ void NGLScene::mouseReleaseEvent(QMouseEvent *_event)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void NGLScene::wheelEvent(QWheelEvent *_event)
 {
   // Check the diff of the wheel position (0 means no change)
