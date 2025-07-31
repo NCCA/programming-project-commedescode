@@ -65,14 +65,17 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
   - From there I discarded of the particle logic such as the birth/death algorithim as the number of boids would boids would be constant, unless altered by the user in the user interface I was planning to build later within the project.
   -  The initial alterations led me to Fig 1 as displayed, a blank UI with no boids, which is due to me not implementing the boid rules yet.
 <img width="980" height="675" alt="image" src="https://github.com/user-attachments/assets/7df4c2b0-d538-4350-be63-3ea163861522" />
+
 - (Fig 2)
 -  I then made a base of the boids logic. As shown in Fig 2 cohesion was working, however the separation wasn't appearing to be working, which I believe was due to having too high of a particle count.
 -   Alignment also wasn't visibly working correctly, which I struggled as to understand why so I asked Claude AI "Why are the boids not aligning correctly within this piece of code (pasted flock.cpp)". It reccomended to add a 'wander' variable which I implemented in the next step.
 <img width="978" height="670" alt="image" src="https://github.com/user-attachments/assets/5406767c-57b5-4938-ae5c-31498038cc4a" />
+
 - Fig 3
 -  With a lower boid count and wander implemented the program began working as shown in Fig 3.
 -   The boids appeared rather small and not as visible as I would have liked so I decided I would increase the size of them slightly. 
 <img width="976" height="667" alt="image" src="https://github.com/user-attachments/assets/d318afce-3cad-4294-8037-50a1f5c3da29" />
+
 - Fig 4
 - k 
 <img width="977" height="659" alt="image" src="https://github.com/user-attachments/assets/70e51008-32f4-4b2f-8677-fb3bd6a01a09" />
