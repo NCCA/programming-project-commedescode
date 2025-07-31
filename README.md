@@ -47,15 +47,15 @@ Birb Representation (parallel std::vectors):
 - m_birbWanderAngles (float): Random movement
 
 ### Efficiency Techniques:
-- OpenMP: #pragma omp parallel for parallelizes boids update
+- OpenMP: #pragma omp parallel, parallelizes boids updates
 - Early Exit: Distance-squared check avoids unnecessary sqrt()
 - Cache-Friendly Layout: Parallel arrays outperform array-of-structs in batch ops
 
 ### Rendering
-- MultiBuffer VAO: Uses NGL’s GPU rendering with separate buffers for position and color
+- MultiBuffer VAO: Uses NGL’s GPU rendering with separate buffers for boid position and color
 - Simple Member Access: Direct values (m_separationWeight, etc.) enable responsive tuning
 
-Structure favors high-performance boid simulation with intuitive Qt controls.
+This structure favors high-performance boid simulation with intuitive user controls using Qt.
 
 ## Project Progression
 <img width="975" height="681" alt="image" src="https://github.com/user-attachments/assets/980ba2d2-cb90-4970-8b87-2fa0a7a24266" />
@@ -93,7 +93,7 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
 - It would be nice to have added an option for the user to give the boids some obsticles (skyscrapers, donut, etc) to fly around.
 
 ## References
-- I used Jon Maceys ParticleQt to build upon of for this project. (https://github.com/NCCA/labcode-jmacey-2/tree/main/ParticleQt) [Last accessed 31 July 2025]
+- I used Jon Maceys ParticleQt to build upon of for this project. (https://github.com/NCCA/labcode-jmacey-2/tree/main/ParticleQt) [Last Accessed 31 July 2025]
 -  Used NGL Graphics Libary (http://nccastaff.bournemouth.ac.uk/jmacey/GraphicsLib/index.html) [Last Accessed 30 July 2025]
 
 The following I read to refer back to during the project to aid my understanding towards the behaviours and how to implement the logic within my assignment:
