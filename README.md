@@ -67,7 +67,7 @@ This structure favors high-performance boid simulation with intuitive user contr
 <img width="980" height="675" alt="image" src="https://github.com/user-attachments/assets/7df4c2b0-d538-4350-be63-3ea163861522" />
 
 - (Fig 2)
--  I then made a base of the boids logic. As shown in Fig 2 cohesion was working, however the separation wasn't appearing to be working, which I believe was due to having too high of a particle count.
+-  I then made a base of the boids logic. As shown in Fig 2 cohesion was working, however the separation wasn't appearing to be working, which was due to having too high of a particle count.
 -   Alignment also wasn't visibly working correctly, which I struggled as to understand why so I asked Claude AI "Why are the boids not aligning correctly within this piece of code (pasted flock.cpp)". It reccomended to add a 'wander' variable which I implemented in the next step.
 <img width="978" height="670" alt="image" src="https://github.com/user-attachments/assets/5406767c-57b5-4938-ae5c-31498038cc4a" />
 
