@@ -252,13 +252,14 @@ void Flock::resetBirb(size_t _index)
 }
 
 
+// Sphere
 ngl::Vec3 Flock::randomVectorOnSphere(float _radius)
 {
   float angle = ngl::Random::randomPositiveNumber(M_PI * 2.0f);
   float radius = ngl::Random::randomPositiveNumber(_radius);
   float height = ngl::Random::randomPositiveNumber(1.0f);
 
-  // As height increases, radius decreases (Sphere shape)
+  
   float adjustedRadius = radius * (1.0f - height * 0.8f);
 
   return ngl::Vec3(adjustedRadius * std::cos(angle),
