@@ -9,232 +9,166 @@
 #include <memory>
 #include <QObject>
 
-//----------------------------------------------------------------------------------------------------------------------
-/// @file flock.h
-/// @brief Class for managing a flock of birds using boids algorithm
-/// @author [Author Name]
-/// @version 1.0
-/// @date [Date]
-//----------------------------------------------------------------------------------------------------------------------
 
 class Flock : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(int numOfBird READ getNumOfBird WRITE setNumOfBird);
+  Q_PROPERTY(int numOfBirb READ getNumOfBirb WRITE setNumOfBirb);
 
 public:
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Constructor for Flock class
-  /// @param [in] _numBirds maximum number of birds in the flock
-  /// @param [in] _maxAlive maximum number of active birds
-  /// @param [in] _numOfBird initial number of birds
-  /// @param [in] _position starting position of the flock
-  //----------------------------------------------------------------------------------------------------------------------
-  Flock(size_t _numBirds, size_t _maxAlive, int _numOfBird, ngl::Vec3 _position);
+  
+  //Constructor for Flock class
+   
+  Flock(size_t _numBirbs, size_t _maxAlive, int _numOfBirb, ngl::Vec3 _position);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the size of the flock
-  /// @returns the maximum number of birds
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Get the size of the flock
+   
   size_t size() const;
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Update the flock simulation
-  /// @param [in] _deltaTime time step for the update
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Update the flock simulation
+
   void update(float _deltaTime);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Render the flock
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  //Render the flock
+   
   void render() const;
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Move the flock position
-  /// @param [in] _deltaX movement in X direction
-  /// @param [in] _deltaY movement in Y direction
-  /// @param [in] _deltaZ movement in Z direction
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Move the flock position
+
   void move(float _deltaX, float _deltaY, float _deltaZ);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Set the number of birds in the flock
-  /// @param [in] _newCount new number of birds
-  //----------------------------------------------------------------------------------------------------------------------
-  void setBirdCount(size_t _newCount);
+   
+  //Set the number of Birbs in the flock
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Set the size of individual birds
-  /// @param [in] _size new bird size
-  //----------------------------------------------------------------------------------------------------------------------
-  void setBirdSize(float _size);
+  void setBirbCount(size_t _newCount);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the current bird size
-  /// @returns current bird size
-  //----------------------------------------------------------------------------------------------------------------------
-  float getBirdSize() const { return m_birdSize; }
+   
+  // Set the size of individual Birbs
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Set the movement speed of the flock
-  /// @param [in] _speed new speed value
-  //----------------------------------------------------------------------------------------------------------------------
+  void setBirbSize(float _size);
+
+   
+  // Get the current Birb size
+
+  float getBirbSize() const { return m_BirbSize; }
+
+   
+  // Set the movement speed of the flock
+
   void setSpeed(float _speed);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Set the maximum number of birds
-  /// @param [in] _maxBirds new maximum bird count
-  //----------------------------------------------------------------------------------------------------------------------
-  void setMaxBirds(int _maxBirds);
+   
+  // Set the maximum number of Birbs
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Set the number of birds spawned per frame
-  /// @param [in] _numPerFrame new spawn rate
-  //----------------------------------------------------------------------------------------------------------------------
+  void setMaxBirbs(int _maxBirbs);
+
+   
+  // Set the number of Birbs spawned per frame
+
   void setNumPerFrame(int _numPerFrame);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Set the spread of the flock
-  /// @param [in] _spread new spread value
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Set the spread of the flock
+ 
   void setSpread(float _spread);
 
   // Getter methods
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the current speed
-  /// @returns current speed value
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Get the current speed
+ 
   float getSpeed() const;
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the maximum number of birds
-  /// @returns maximum bird count
-  //----------------------------------------------------------------------------------------------------------------------
-  int getMaxBirds() const;
+   
+  // Get the maximum number of Birbs
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the number of birds spawned per frame
-  /// @returns spawn rate
-  //----------------------------------------------------------------------------------------------------------------------
+  int getMaxBirbs() const;
+
+   
+  // Get the number of Birbs spawned per frame
+
   int getNumPerFrame() const;
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the current spread value
-  /// @returns current spread
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Get the current spread value
+
   float getSpread() const { return m_spread; }
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Get the current number of birds
-  /// @returns current number of birds
-  //----------------------------------------------------------------------------------------------------------------------
-  int getNumOfBird() const { return m_numOfBird; }
+  
+   
+  int getNumOfBirb() const { return m_numOfBirb; }
 
 public slots:
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Qt slot to set number of birds
-  /// @param [in] _value new bird count
-  //----------------------------------------------------------------------------------------------------------------------
-  void setNumOfBird(int _value);
+   
+   
+  void setNumOfBirb(int _value);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Qt slot to set separation weight
-  /// @param [in] _value new separation weight
-  //----------------------------------------------------------------------------------------------------------------------
+   
   void setSeparationWeight(double _value);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Qt slot to set alignment weight
-  /// @param [in] _value new alignment weight
-  //----------------------------------------------------------------------------------------------------------------------
+   
   void setAlignmentWeight(double _value);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Qt slot to set cohesion weight
-  /// @param [in] _value new cohesion weight
-  //----------------------------------------------------------------------------------------------------------------------
+   
   void setCohesionWeight(double _value);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Qt slot to set wander weight
-  /// @param [in] _value new wander weight
-  //----------------------------------------------------------------------------------------------------------------------
+   
   void setWanderWeight(double _value);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Qt slot to set speed (double version for Qt compatibility)
-  /// @param [in] _value new speed value
-  //----------------------------------------------------------------------------------------------------------------------
+   
   void setSpeed(double _value);
 
 private:
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Apply boids rules to a specific bird
-  /// @param [in] _index index of the bird to update
-  /// @param [in] _deltaTime time step for the update
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Apply boids rules to a specific Birb
+
   void applyBoidsRules(size_t _index, float _deltaTime);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Create cone geometry for rendering
-  //----------------------------------------------------------------------------------------------------------------------
-  void createConeGeometry();
+   
+  // Create Sphere geometry for rendering
+   
+  void createSphereGeometry();
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Calculate separation force for a bird
-  /// @param [in] _index index of the bird
-  /// @returns separation force vector
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Calculate separation force for a Birb
+
+   
   ngl::Vec3 getSeparation(size_t _index);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Calculate alignment force for a bird
-  /// @param [in] _index index of the bird
-  /// @returns alignment force vector
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Calculate alignment force for a Birb
+   
   ngl::Vec3 getAlignment(size_t _index);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Calculate cohesion force for a bird
-  /// @param [in] _index index of the bird
-  /// @returns cohesion force vector
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Calculate cohesion force for a Birb
+
   ngl::Vec3 getCohesion(size_t _index);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Calculate wander force for a bird
-  /// @param [in] _index index of the bird
-  /// @returns wander force vector
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Calculate wander force for a Birb
+   
   ngl::Vec3 getWander(size_t _index);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Calculate boundary forces to keep birds within bounds
-  /// @param [in] _index index of the bird
-  /// @returns boundary force vector
-  //----------------------------------------------------------------------------------------------------------------------
+   
+  // Calculate boundary forces to keep Birbs within bounds
+   
   ngl::Vec3 getBounds(size_t _index);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Reset a bird to initial state
-  /// @param [in] _index index of the bird to reset
-  //----------------------------------------------------------------------------------------------------------------------
-  void resetBird(size_t _index);
+  
+  void resetBirb(size_t _index);
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Spawn new birds
-  //----------------------------------------------------------------------------------------------------------------------
-  void birthBirds();
 
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief Generate a random vector on a cone
-  /// @param [in] _radius radius of the cone base
-  /// @returns random vector on cone
-  //----------------------------------------------------------------------------------------------------------------------
-  ngl::Vec3 randomVectorOnCone(float _radius = 1.0f);
+  void birthBirbs();
 
-  // Bird state enumeration
-  enum class BirdState : bool { Active, Dead };
+   
+  ngl::Vec3 randomVectorOnSphere(float _radius = 1.0f);
+
+  // Birb state enumeration
+  enum class BirbState : bool { Active, Dead };
 
   // Member variables
   float m_maxSpeed = 5.0f;
@@ -246,21 +180,21 @@ private:
   std::vector<ngl::Vec3> m_particleColour;
   std::vector<float> m_particleSize;
   std::vector<int> m_particleLife;
-  std::vector<BirdState> m_state;
+  std::vector<BirbState> m_state;
   std::vector<float> m_wanderAngles;
 
   ngl::Vec3 m_wanderTarget;
 
-  size_t m_maxBirds;
+  size_t m_maxBirbs;
   size_t m_maxAlive = 50;
-  int m_numOfBird = 50;
+  int m_numOfBirb = 50;
 
   // User control variables
   float m_speed = 1.0f;
-  int m_maxBirdsLimit = 100;
+  int m_maxBirbsLimit = 100;
   int m_numPerFrame = 2;
   float m_spread = 5.5f;
-  float m_birdSize = 10.0f;
+  float m_BirbSize = 10.0f;
 
   // Force weight variables
   float m_separationWeight = 0.8f;
