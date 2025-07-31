@@ -82,11 +82,12 @@ Structure favors high-performance boid simulation with intuitive Qt controls.
 - I thought it would also be a good idea looking at it to be able to switch on and off the grids visibility so that it could be used if wanted to track their movement. That function did not work yet due to incorrect implementation so the controls were not connected to the gird itself.
 <img width="977" height="659" alt="image" src="https://github.com/user-attachments/assets/70e51008-32f4-4b2f-8677-fb3bd6a01a09" />
 
+- Fig 5
 - Lastly, I got the grid controls working so that the user could now switch it on and off.
 - Alongside that I chose to make the background black to make the boids more visible to the user.
 
 ## Project Evaluation
-x
+
 
 ## References
 
