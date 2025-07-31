@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include <QApplication>
 
-//----------------------------------------------------------------------------------------------------------------------
+
 int main(int _argc, char *_argv[])
 {
     QSurfaceFormat format;
