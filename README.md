@@ -58,8 +58,10 @@ Birb Representation (parallel std::vectors):
 Structure favors high-performance boid simulation with intuitive Qt controls.
 
 ## Project Progression
-<img width="975" height="681" alt="image" src="https://github.com/user-attachments/assets/980ba2d2-cb90-4970-8b87-2fa0a7a24266" />
-First this 
+<img width="975" height="681" alt="image" src="https://github.com/user-attachments/assets/980ba2d2-cb90-4970-8b87-2fa0a7a24266" /> (Fig 1)
+Initially I began the project using ParticleQt by Jon Macey as a starting point. From there I altered it so that the 'particles' would be 'birb's, which would act as the boids and 'emitter' would be the 'flock'. 
+From there I discarded of the particle logic such as the birth/death algorithim as the number of boids would boids would be constant, unless altered by the user in the user interface I was planning to build later within the project. 
+The initial alterations led me to Fig 1 as displayed, a blank UI with no boids, which is due to me not implementing the boid rules yet.
 <img width="973" height="647" alt="image" src="https://github.com/user-attachments/assets/3ac9b00f-55a4-4251-8d07-d3ef2232c642" />
 Then this
 <img width="980" height="675" alt="image" src="https://github.com/user-attachments/assets/7df4c2b0-d538-4350-be63-3ea163861522" />
