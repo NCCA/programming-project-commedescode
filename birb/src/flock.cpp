@@ -11,11 +11,11 @@
 #include <ngl/VAOFactory.h>
 #include <algorithm>
 
-//----------------------------------------------------------------------------------------------------------------------
-Flock::Flock(size_t _numBirds, size_t _maxAlive, int _numOfBird, ngl::Vec3 _position) :
-  m_maxBirds{_numBirds},
+
+Flock::Flock(size_t _numBirbs, size_t _maxAlive, int _numOfBirb, ngl::Vec3 _position) :
+  m_maxBirbs{_numBirbs},
   m_maxAlive{_maxAlive},
-  m_numOfBird{_numOfBird},
+  m_numOfBirb{_numOfBirb},
   m_position{_position}
 {
   // Initialize VAO
@@ -28,20 +28,20 @@ Flock::Flock(size_t _numBirds, size_t _maxAlive, int _numOfBird, ngl::Vec3 _posi
   m_vao->unbind();
 
   // Start with random number between 2-20 boids
-  size_t startingBirds = 2 + static_cast<size_t>(ngl::Random::randomPositiveNumber(19));
-  setBirdCount(startingBirds);
+  size_t startingBirbs = 2 + static_cast<size_t>(ngl::Random::randomPositiveNumber(19));
+  setBirbCount(startingBirbs);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 size_t Flock::size() const
 {
-  return m_maxBirds;
+  return m_maxBirbs;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Boid rules
 void Flock::applyBoidsRules(size_t _index, float _deltaTime)
 {
-  if(m_state[_index] != BirdState::Active)
+  if(m_state[_index] != BirbState::Active)
     return;
 
   ngl::Vec3 separation = getSeparation(_index) * m_separationWeight;
@@ -52,7 +52,7 @@ void Flock::applyBoidsRules(size_t _index, float _deltaTime)
 
   m_particleDirection[_index] += (separation + alignment + cohesion + wander + bounds) * _deltaTime;
 
-  // Limit speed
+  // Speed
   if(m_particleDirection[_index].length() > 5.0f)
   {
     m_particleDirection[_index].normalize();
@@ -60,17 +60,17 @@ void Flock::applyBoidsRules(size_t _index, float _deltaTime)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Separation
 ngl::Vec3 Flock::getSeparation(size_t _index)
 {
   ngl::Vec3 steer(0.0f, 0.0f, 0.0f);
   int count = 0;
 
-  for(size_t j = 0; j < m_maxBirds; ++j)
+  for(size_t j = 0; j < m_maxBirbs; ++j)
   {
-    if(_index != j && m_state[j] == BirdState::Active)
+    if(_index != j && m_state[j] == BirbState::Active)
     {
-      // Optimized distance calculation
+      // Distance calculation
       ngl::Vec3 diff = ngl::Vec3(m_particlePosition[_index].m_x - m_particlePosition[j].m_x,
                                 m_particlePosition[_index].m_y - m_particlePosition[j].m_y,
                                 m_particlePosition[_index].m_z - m_particlePosition[j].m_z);
@@ -85,7 +85,7 @@ ngl::Vec3 Flock::getSeparation(size_t _index)
       if(distance > 0.0f)
       {
         diff.normalize();
-        diff /= distance; // Weight by distance
+        diff /= distance; // Distance forces
         steer += diff;
         count++;
       }
@@ -103,15 +103,15 @@ ngl::Vec3 Flock::getSeparation(size_t _index)
   return steer * 1.5f; // Separation weight
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Alignment
 ngl::Vec3 Flock::getAlignment(size_t _index)
 {
   ngl::Vec3 sum(0.0f, 0.0f, 0.0f);
   int count = 0;
 
-  for(size_t j = 0; j < m_maxBirds; ++j)
+  for(size_t j = 0; j < m_maxBirbs; ++j)
   {
-    if(_index != j && m_state[j] == BirdState::Active)
+    if(_index != j && m_state[j] == BirbState::Active)
     {
       float distance = (m_particlePosition[_index] - m_particlePosition[j]).length();
       if(distance > 0.0f && distance < m_neighborRadius)
@@ -133,15 +133,15 @@ ngl::Vec3 Flock::getAlignment(size_t _index)
   return ngl::Vec3(0.0f, 0.0f, 0.0f);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Cohesion
 ngl::Vec3 Flock::getCohesion(size_t _index)
 {
   ngl::Vec3 sum(0.0f, 0.0f, 0.0f);
   int count = 0;
 
-  for(size_t j = 0; j < m_maxBirds; ++j)
+  for(size_t j = 0; j < m_maxBirbs; ++j)
   {
-    if(_index != j && m_state[j] == BirdState::Active)
+    if(_index != j && m_state[j] == BirbState::Active)
     {
       float distance = (m_particlePosition[_index] - m_particlePosition[j]).length();
       if(distance > 0.0f && distance < m_neighborRadius)
@@ -164,10 +164,27 @@ ngl::Vec3 Flock::getCohesion(size_t _index)
   return ngl::Vec3(0.0f, 0.0f, 0.0f);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Wander
+// Code assisted by Claude AI
+// Prompt: 'How to get my boids code going in different directions/ less uniformly to appear like a more natural flock?'
+// Claude suggested
+// ngl::Vec3 Flock::getWander(size_t _index)
+// {
+//   // Update wander angle
+//   m_wanderAngles[_index] += (ngl::Random::randomNumber() - 0.3f) * 0.2f;
+
+//   ngl::Vec3 wander(
+//     std::cos(m_wanderAngles[_index]) * 4.0f,
+//     std::sin(m_wanderAngles[_index] * 0.6f) * 0.3f,
+//     std::sin(m_wanderAngles[_index]) * 2.0f
+//   );
+
+//   return wander;
+// }
+
 ngl::Vec3 Flock::getWander(size_t _index)
 {
-  // Update this bird's wander angle
+  // Update wander angle
   m_wanderAngles[_index] += (ngl::Random::randomNumber() - 0.5f) * 0.3f;
 
   ngl::Vec3 wander(
@@ -179,7 +196,7 @@ ngl::Vec3 Flock::getWander(size_t _index)
   return wander;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Bounds
 ngl::Vec3 Flock::getBounds(size_t _index)
 {
   ngl::Vec3 force(0.0f, 0.0f, 0.0f);
@@ -197,15 +214,15 @@ ngl::Vec3 Flock::getBounds(size_t _index)
   return force * 5.0f;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void Flock::update(float _deltaTime)
 {
   const ngl::Vec3 gravity(0.0f, -9.81f, 0.0f);
 
   #pragma omp parallel for
-  for(size_t i = 0; i < m_maxBirds; ++i)
+  for(size_t i = 0; i < m_maxBirbs; ++i)
   {
-    if(m_state[i] == BirdState::Dead)
+    if(m_state[i] == BirbState::Dead)
       continue;
 
     // Apply boids behavior
@@ -215,33 +232,33 @@ void Flock::update(float _deltaTime)
     m_particlePosition[i] += ngl::Vec4(m_particleDirection[i] * m_speed * _deltaTime, 0.0f);
 
     // Keep size constant
-    m_particleSize[i] = m_birdSize;
-    m_particlePosition[i].m_w = m_birdSize;
+    m_particleSize[i] = m_BirbSize;
+    m_particlePosition[i].m_w = m_BirbSize;
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void Flock::resetBird(size_t _index)
+
+void Flock::resetBirb(size_t _index)
 {
   ngl::Vec3 emitDirection(0.0f, 1.0f, 0.0f);
-  m_state[_index] = BirdState::Active;
-  m_particlePosition[_index].set(m_position.m_x, m_position.m_y, m_position.m_z, m_birdSize);
-  m_particleDirection[_index] = emitDirection * 0.1f + randomVectorOnCone() * 0.5f;
+  m_state[_index] = BirbState::Active;
+  m_particlePosition[_index].set(m_position.m_x, m_position.m_y, m_position.m_z, m_BirbSize);
+  m_particleDirection[_index] = emitDirection * 0.1f + randomVectorOnSphere() * 0.5f;
   m_particleDirection[_index].m_y = std::abs(m_particleDirection[_index].m_y) * 0.1f;
-  m_particleSize[_index] = m_birdSize;
+  m_particleSize[_index] = m_BirbSize;
   m_particleLife[_index] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(10));
   m_particleColour[_index] = ngl::Random::getRandomColour3();
-  m_state[_index] = BirdState::Active;
+  m_state[_index] = BirbState::Active;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-ngl::Vec3 Flock::randomVectorOnCone(float _radius)
+
+ngl::Vec3 Flock::randomVectorOnSphere(float _radius)
 {
   float angle = ngl::Random::randomPositiveNumber(M_PI * 2.0f);
   float radius = ngl::Random::randomPositiveNumber(_radius);
   float height = ngl::Random::randomPositiveNumber(1.0f);
 
-  // As height increases, radius decreases (cone shape)
+  // As height increases, radius decreases (Sphere shape)
   float adjustedRadius = radius * (1.0f - height * 0.8f);
 
   return ngl::Vec3(adjustedRadius * std::cos(angle),
@@ -249,7 +266,7 @@ ngl::Vec3 Flock::randomVectorOnCone(float _radius)
                    adjustedRadius * std::sin(angle));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void Flock::render() const
 {
   m_vao->bind();
@@ -266,14 +283,14 @@ void Flock::render() const
 
   m_vao->setVertexAttributePointer(1, 3, GL_FLOAT, 0, 0);
 
-  m_vao->setNumIndices(m_maxBirds);
+  m_vao->setNumIndices(m_maxBirbs);
   glEnable(GL_PROGRAM_POINT_SIZE);
   m_vao->draw();
   glDisable(GL_PROGRAM_POINT_SIZE);
   m_vao->unbind();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void Flock::move(float _dx, float _dy, float _dz)
 {
   m_position.m_x += _dx;
@@ -281,122 +298,122 @@ void Flock::move(float _dx, float _dy, float _dz)
   m_position.m_z += _dz;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// Spread
 void Flock::setSpread(float _value)
 {
   m_spread = _value;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void Flock::setBirdCount(size_t _newCount)
+// Number of birbs
+void Flock::setBirbCount(size_t _newCount)
 {
-  m_maxBirds = _newCount;
+  m_maxBirbs = _newCount;
 
   // Resize all vectors
-  m_particlePosition.resize(m_maxBirds);
-  m_particleColour.resize(m_maxBirds);
-  m_particleDirection.resize(m_maxBirds);
-  m_particleLife.resize(m_maxBirds);
-  m_particleSize.resize(m_maxBirds);
-  m_state.resize(m_maxBirds);
-  m_wanderAngles.resize(m_maxBirds, 0.0f);
+  m_particlePosition.resize(m_maxBirbs);
+  m_particleColour.resize(m_maxBirbs);
+  m_particleDirection.resize(m_maxBirbs);
+  m_particleLife.resize(m_maxBirbs);
+  m_particleSize.resize(m_maxBirbs);
+  m_state.resize(m_maxBirbs);
+  m_wanderAngles.resize(m_maxBirbs, 0.0f);
 
-  // Initialize new birds
-  for(size_t i = 0; i < m_maxBirds; ++i)
+  // Initialize new Birbs
+  for(size_t i = 0; i < m_maxBirbs; ++i)
   {
-    resetBird(i);
-    m_state[i] = BirdState::Active;
+    resetBirb(i);
+    m_state[i] = BirbState::Active;
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void Flock::setBirdSize(float _size)
-{
-  m_birdSize = std::clamp(_size, 0.05f, 5.0f);
 
-  // Update all existing birds
-  for(size_t i = 0; i < m_maxBirds; ++i)
+void Flock::setBirbSize(float _size)
+{
+  m_BirbSize = std::clamp(_size, 0.05f, 5.0f);
+
+  // Update all existing Birbs
+  for(size_t i = 0; i < m_maxBirbs; ++i)
   {
-    if(m_state[i] == BirdState::Active)
+    if(m_state[i] == BirbState::Active)
     {
-      m_particleSize[i] = m_birdSize;
-      m_particlePosition[i].m_w = m_birdSize;
+      m_particleSize[i] = m_BirbSize;
+      m_particlePosition[i].m_w = m_BirbSize;
     }
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 void Flock::setSpeed(float _speed)
 {
   m_speed = _speed;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void Flock::setMaxBirds(int _maxBirds)
+
+void Flock::setMaxBirbs(int _maxBirbs)
 {
-  m_maxBirdsLimit = _maxBirds;
+  m_maxBirbsLimit = _maxBirbs;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 void Flock::setNumPerFrame(int _numPerFrame)
 {
   m_numPerFrame = _numPerFrame;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 float Flock::getSpeed() const
 {
   return m_speed;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-int Flock::getMaxBirds() const
+ 
+int Flock::getMaxBirbs() const
 {
-  return m_maxBirdsLimit;
+  return m_maxBirbsLimit;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 int Flock::getNumPerFrame() const
 {
   return m_numPerFrame;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void Flock::setNumOfBird(int _num)
+ 
+void Flock::setNumOfBirb(int _num)
 {
-  std::cout << "Setting number of birds to: " << _num << std::endl;
-  setBirdCount(static_cast<size_t>(_num));
+  std::cout << "Setting number of Birbs to: " << _num << std::endl;
+  setBirbCount(static_cast<size_t>(_num));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 void Flock::setSeparationWeight(double _weight)
 {
   m_separationWeight = static_cast<float>(_weight);
   std::cout << "Setting separation weight to: " << _weight << std::endl;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 void Flock::setAlignmentWeight(double _weight)
 {
   m_alignmentWeight = static_cast<float>(_weight);
   std::cout << "Setting alignment weight to: " << _weight << std::endl;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 void Flock::setCohesionWeight(double _weight)
 {
   m_cohesionWeight = static_cast<float>(_weight);
   std::cout << "Setting cohesion weight to: " << _weight << std::endl;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 void Flock::setWanderWeight(double _weight)
 {
   m_wanderWeight = static_cast<float>(_weight);
   std::cout << "Setting wander weight to: " << _weight << std::endl;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+ 
 void Flock::setSpeed(double _value)
 {
   m_speed = static_cast<float>(_value);
