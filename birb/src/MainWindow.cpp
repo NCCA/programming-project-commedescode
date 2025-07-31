@@ -1,7 +1,7 @@
 #include "../include/MainWindow.h"
 #include "ui/ui_MainWindow.h"
 
-//----------------------------------------------------------------------------------------------------------------------
+
 MainWindow::MainWindow(QWidget *_parent) :
   QMainWindow(_parent),
   m_ui(new Ui::MainWindow)
@@ -24,15 +24,15 @@ MainWindow::MainWindow(QWidget *_parent) :
     // Connect UI controls to flock slots
     connect(m_ui->m_NumOfBirb, SIGNAL(valueChanged(int)),
             flock, SLOT(setNumOfBird(int)));
-    // Apply initial value
+    //Change number of birbs
     flock->setNumOfBird(m_ui->m_NumOfBirb->value());
 
     connect(m_ui->m_speedSlider, SIGNAL(valueChanged(double)),
             flock, SLOT(setSpeed(double)));
-    // Apply initial value
+    // Apply speed
     flock->setSpeed(static_cast<float>(m_ui->m_speedSlider->value()));
 
-    // Add the boids force slider connections
+    // Add the boids rules
     connect(m_ui->m_separationSlider, SIGNAL(valueChanged(double)),
             flock, SLOT(setSeparationWeight(double)));
     flock->setSeparationWeight(m_ui->m_separationSlider->value());
@@ -47,11 +47,12 @@ MainWindow::MainWindow(QWidget *_parent) :
 
     connect(m_ui->m_wanderSlider, SIGNAL(valueChanged(double)),
             flock, SLOT(setWanderWeight(double)));
+    // Wander forces
     flock->setWanderWeight(m_ui->m_wanderSlider->value());
   });
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 MainWindow::~MainWindow()
 {
   delete m_ui;
